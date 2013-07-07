@@ -9,6 +9,11 @@ def index(request):
     html = t.render(Context({}))
     return HttpResponse(html)
 
+def jq(request):
+    t = get_template('jq.html')
+    html = t.render(Context())
+    return HttpResponse(html)
+
 
 def process_codein(curcode, precode, outqueue):
     try:
