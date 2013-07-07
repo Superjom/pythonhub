@@ -1,0 +1,73 @@
+<html>
+    <style>
+        h1{
+            clear:both;
+        }
+        #code,#output{
+            width:500px;
+            height:200px;
+            font-size:18px;
+        }
+        button{
+            font-size:24;
+			font-family:"微软雅黑", "Times New Roman";
+        }
+        #main{
+            float: left;
+            width:500px;
+        }
+        #intro{
+            float: left;
+            margin-left:20px;
+            width: 400px;
+			font-family:"微软雅黑", "Times New Roman";
+        }
+    </style>
+
+    <script src="/static/jquery.js"></script>
+    <body>
+            <h1> Python Hub v0.0.2</h1>
+        <div id='main'>
+
+            <h2> Code here:</h2>
+            <textarea id='code'></textarea>
+            <br/>
+            <button id="run" type='button'>run</button>
+
+            <h2>Output:</h2>
+            <textarea id='output'></textarea>
+        </div><!-- end main -->
+
+        <div id='intro'>
+            <h2>功能功能:</h2>
+            <ul>
+                <li>支持单行，多行Python代码执行。</li>
+                <li>保存前面运行过的环境。</li>
+                <li>合理显示所有错误提示。</li>
+            </ul>
+            <h2>安全方面：</h2>
+            <ul>
+                <li>屏蔽了os等模块，阻止了`__file__`等内置类型，私有沙箱内运行。</li>
+                <li>输出流长度控制，单行70,列表200以内。</li>
+                <li>运行时间控制在0.5s(可以任意修改)，死循环等安全退出。</li>
+            </ul>
+            <b>请自由尝试。 如果发现功能缺陷，特别是安全漏洞，不妨告诉我: superjom@outlook.com  ， 不甚感谢！</b>
+        </div>
+
+    </body>
+
+    <script>
+        $(function(){
+            $("button#run").click(function(){
+                $.get("./hello", {
+                        'code': $("#code").val()
+                    }, 
+                    function(res){
+                    $("#output").val(res)
+                });
+                $("#code").val('');
+            });
+        });
+    </script>
+
+</html>
