@@ -60,15 +60,31 @@ class MyBuffer(object):
         return ''.join(self._buffers)
 
 
+BANNED_BUILTINS = (
+    'reload', 'open', 'compile', 
+    'file', 'eval', 'exec', 'execfile',
+    'exit', 'quit', 'help', 'dir',
+    'globals', 'locals', 'vars',
+)
+
+IGNORE_VARS = set((
+    '__builtins__', '__name__', '__exception__',
+    '__doc__', '__package__',
+))
+
+LEGEL_MODULES = (
+    "math", 'random', 'datetime',
+    'functools', 'operator', 'string',
+    'colletions', 're', 'json',
+    'heapq', 'bisect',
+)
+
 class Codin(object):
     """
     compile string and run code safely in a server
     """
     env_gloa = dict(globals().items())
     limited_time = 1
-    legel_modules = (
-        "math",
-    )
 
     def __init__(self):
         self.mybuffer = MyBuffer()
@@ -84,9 +100,12 @@ class Codin(object):
 
 
     def _env_clean(self):
-        for name in ('__file__', '__name__', '__doc__'):
-            del self.env_gloa[name]
-        for func in ('globals', 'locals', 'file', 'open'):
+        for name in IGNORE_VARS:
+            try:
+                del self.env_gloa[name]
+            except:
+                pass
+        for func in  BANNED_BUILTINS:
             try:
                 delattr(self.env_gloa['__builtins__'], func)
             except:
@@ -127,12 +146,6 @@ class Codin(object):
             curcode,
             "sys.stdout = _stdout", ])
 
-        # compile and run
-        print 'code:' 
-        print '-' * 50
-        print code
-        print '-' * 50
-
         try:
             comppiled_obj = compile(code, '<string>', mode) 
         except SyntaxError, e:
@@ -158,8 +171,8 @@ class Codin(object):
                 module = reg.search(strr).groups('module')
             except:
                 pass
-        if module: print 'import module: ', module[0]
-        if module and module[0] not in self.legel_modules:
+        #if module: print 'import module: ', module[0]
+        if module and module[0] not in LEGEL_MODULES:
             return True
         return False
 
